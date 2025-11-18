@@ -1,0 +1,7 @@
+__pycache__
+
+Pages/__pycache__
+
+Utils/__pycache__
+
+.streamlit/secrets.toml
