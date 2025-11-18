@@ -1,10 +1,10 @@
-import sidebar
 import streamlit as st
-import queries
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LinearRegression
 from prophet import Prophet
+from Utils import queries
+from Utils import config_page
 
 def create_prophet_model(df):
     model = Prophet()
@@ -143,12 +143,7 @@ def linear_regresion_test(data: pd.DataFrame):
 
 ####################################################################################################################################
 
-sidebar.config()
-st.set_page_config(
-    page_title="Empleo en EE. UU.",
-    page_icon="🇺🇸",
-    layout="wide"
-    )
+config_page.config()
 
 
 #data = queries.get_unemployment_data()

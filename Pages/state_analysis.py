@@ -1,16 +1,10 @@
-
 import streamlit as st
 import pandas as pd
-import queries
-import sidebar
 import altair as alt
+from Utils import queries
+from Utils import config_page
 
-sidebar.config()
-st.set_page_config(
-    page_title="Empleo en EE. UU.",
-    page_icon="🇺🇸",
-    layout="wide"
-    )
+config_page.config()
 
 all_data = queries.get_all_data()
 
@@ -24,7 +18,7 @@ all_data = pd.concat([all_data, national])
 states_df = queries.get_state_data()
 states_df.loc[len(states_df)] = ["00", "Total"]
 
-states = st.multiselect("Escoge los estados", list(states_df["State/Area"]), ["Iowa"])
+states = st.multiselect("Choose states", list(states_df["State/Area"]), ["Iowa"])
 
 all_data["Inactive Population"] = all_data["Non-Institutional Population"] - all_data["Labor Force"]
 all_data["Labor Force Rate"] = all_data["Labor Force"] / all_data["Non-Institutional Population"]
@@ -38,7 +32,7 @@ measures_list.remove("Date")
 measures_list.remove("State/Area")
 
 
-measure = st.selectbox("Medidas", measures_list)
+measure = st.selectbox("Measure", measures_list)
 
 not_measure = measures_list
 
@@ -49,7 +43,7 @@ all_data = all_data.drop(columns=not_measure)
 
 
 if not states:
-    st.error("Escoja un estado.")
+    st.error("Choose a state.")
 else:
     all_data = all_data.set_index("State/Area")
     data = all_data.loc[states]

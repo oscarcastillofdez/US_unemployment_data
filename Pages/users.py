@@ -1,14 +1,9 @@
 import streamlit as st
 import pandas as pd
-import sidebar
-import queries
+from Utils import config_page
+from Utils import queries
 
-sidebar.config()
-st.set_page_config(
-    page_title="Empleo en EE. UU.",
-    page_icon="🇺🇸",
-    layout="wide"
-    )
+config_page.config()
 users, groups, roles, gp, gr = queries.get_all_users_tables()
 st.write(users)
 st.write(groups)

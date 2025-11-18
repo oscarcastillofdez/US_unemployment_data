@@ -1,5 +1,5 @@
 import streamlit as st
-import queries
+from Utils import queries
 
 def login():
 
@@ -9,7 +9,7 @@ def login():
     password_df = queries.get_user_password(username)
 
     if (len(password_df) != 1):
-        st.error("Usuario o contraseña incorrectos")
+        st.error("Incorrect user or password")
     elif password_df.loc[0, "user_password"] == password:
         st.session_state.logged_in = True
 
@@ -27,9 +27,9 @@ def login():
 def layout():
     st.set_page_config(page_title="Login", page_icon="🔑", layout="centered")
 
-    st.title("🔐 Página de Login")
-    st.text_input("Usuario", key="username")
-    st.text_input("Contraseña", type="password", key="password")
+    st.title("🔐 Login Page")
+    st.text_input("User", key="username")
+    st.text_input("Password", type="password", key="password")
 
-    st.button("Iniciar sesión", on_click=login)
+    st.button("Log in", on_click=login)
 

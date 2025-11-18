@@ -1,9 +1,6 @@
 import streamlit as st
-
-from matplotlib.colors import LinearSegmentedColormap
-
-import login
-import home
+from Pages import login
+from Pages import home
 
 def logout():
     st.session_state.dev = False
@@ -18,10 +15,5 @@ if not st.session_state.logged_in:
     login.layout()
 else:
     home.layout()
-    st.button("Cerrar Sesión", on_click=logout)
 
-
-
-    
-
-    
+    st.button("Log out", on_click=logout)

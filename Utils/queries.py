@@ -56,8 +56,17 @@ def get_precovid_totals():
             WHERE cl."Year" < 2020
             GROUP BY "Date"
             ORDER BY "Date"
-        
     """)
+
+def get_precovid_data():
+    return make_query( """
+        SELECT *
+        FROM unemployment_data
+            NATURAL JOIN public.state_lookup
+            NATURAL JOIN public.calendar_lookup cl
+            WHERE cl."Year" < 2020
+    """)
+
 
 def get_latest_data():
     return make_query("""
