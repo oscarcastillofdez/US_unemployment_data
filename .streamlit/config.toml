@@ -1,0 +1,8 @@
+[client]
+showSidebarNavigation = false
+[theme]
+primaryColor = "#0A3161"        # Color principal (botones, sliders, etc.)
+backgroundColor = "#FFFFFF"     # Fondo
+secondaryBackgroundColor = "#8598B0"  # Fondo de los paneles laterales
+textColor = "#0A3161"           # Texto
+font = "sans serif"             # Fuente
