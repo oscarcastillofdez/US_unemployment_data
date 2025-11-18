@@ -1,6 +1,6 @@
 import streamlit as st
-from Pages import login
-from Pages import home
+from pages import login
+from pages import home
 
 def logout():
     st.session_state.dev = False
