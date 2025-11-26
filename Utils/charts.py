@@ -1,5 +1,6 @@
 import altair as alt
 import streamlit as st
+import plotly.graph_objects as go
 
 def good_point_chart(df, x, y, sort_order = None, y_format = ".0f"):
 
@@ -95,3 +96,20 @@ def prediction_chart(df, x, y_real, y_predict, sort_order = None, y_format = "%"
                 scale=alt.Scale()))
 
     st.altair_chart(chart, use_container_width=True)
+
+def gauge_chart(value, min_v, max_v, threshold):
+    fig = go.Figure(go.Indicator(
+        mode = "gauge+number",
+        value = value,
+        gauge = {
+            'axis': {'range': [min_v, max_v]},
+            'bar': {'color': "#0A3161"},
+            'threshold': {
+                'line': {'color': "#B31942", 'width': 4},
+                'thickness': 0.75,
+                'value': threshold
+            }
+        }
+    ))
+
+    st.plotly_chart(fig)

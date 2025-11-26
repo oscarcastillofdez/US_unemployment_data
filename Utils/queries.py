@@ -36,21 +36,32 @@ def make_query(query):
 
 
 def get_all_data():
-
-    init = time.time()
-    df =  make_query(""" 
+    return make_query(""" 
         SELECT * 
         FROM public.unemployment_data 
             NATURAL JOIN public.state_lookup
             NATURAL JOIN public.calendar_lookup
             NATURAL JOIN public.benefits_lookup
     """)
-    fin = time.time()
 
-    st.write("Query in : ", fin - init, "seconds")
+@st.cache_data
+def get_complete_data():
+    all_data = get_all_data()
+    all_data["Date"] = pd.to_datetime(all_data["Date"], format="%Y-%m")
 
 
-    return df
+    national_data = all_data.groupby(["Date", "Year", "Month"])[["Non-Institutional Population", "Labor Force", "Employment", "Unemployment"]].sum()
+
+    national_data["Unemployment Rate"] = national_data["Unemployment"] / national_data["Labor Force"]
+    national_data["State/Area"] = "Total"
+    national_data = national_data.reset_index()
+    complete_data = pd.concat([all_data, national_data])
+    complete_data["Inactive Population"] = complete_data["Non-Institutional Population"] - complete_data["Labor Force"]
+    complete_data["Labor Force Rate"] = complete_data["Labor Force"] / complete_data["Non-Institutional Population"]
+    complete_data["Employment Rate"] = complete_data["Employment"] / complete_data["Non-Institutional Population"]
+
+
+    return complete_data
 
 def get_unemployment_data():
     return make_query("SELECT * FROM unemployment_data")
