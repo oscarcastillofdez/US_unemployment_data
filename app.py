@@ -15,5 +15,4 @@ if not st.session_state.logged_in:
     login.layout()
 else:
     home.layout()
-
     st.button("Log out", on_click=logout)

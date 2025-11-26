@@ -3,6 +3,7 @@ import pandas as pd
 import altair as alt
 from matplotlib.colors import LinearSegmentedColormap
 from Utils import queries
+from Utils import charts
 from Utils import config_page
 
 def layout():
@@ -18,27 +19,6 @@ def layout():
     national_data["Labor Force Rate"] = national_data["Labor Force"] / national_data["Non-Institutional Population"]
     national_data["Employment Rate"] = national_data["Employment"] / national_data["Non-Institutional Population"]
     national_data["Unemployment Rate"] = national_data["Unemployment"] / national_data["Labor Force"]
-    national_data = national_data.rename(columns={"Date":"Fecha", "Employment Rate":"Employment Rate", "Unemployment Rate":"Unemployment Rate"})
-
-
-    chart_desempleo = (
-            alt.Chart(national_data)
-            .mark_area(color="#B31942")
-            .encode(
-                x=alt.X("Fecha:T", title=None),
-                y=alt.Y("Unemployment Rate:Q", axis=alt.Axis(format='%'), stack=None, title=None)
-            )
-        )
-
-    chart_empleo= (
-            alt.Chart(national_data)
-            .mark_line(color="#0A3161")
-            .encode(
-                x=alt.X("Fecha:T",title=None),
-                y=alt.Y("Employment Rate:Q", axis=alt.Axis(format='%'), stack=None, scale= alt.Scale(domain=[0.45, 0.7]), title=None)
-
-            )
-        )
 
     average_data = queries.get_state_average()
 
@@ -84,7 +64,7 @@ def layout():
         st.write("## Unemployment Rate")
         st.write("")
         st.write("")
-        st.altair_chart(chart_desempleo, use_container_width=True)
+        charts.red_area_chart(national_data, "Date", "Unemployment Rate", y_format="%")
         
         
     with col12:
@@ -97,7 +77,8 @@ def layout():
         st.write("## Employment Rate")
         st.write("")
         st.write("")
-        st.altair_chart(chart_empleo, use_container_width=True)
+        charts.blue_line_chart(national_data, "Date", "Employment Rate", y_format="%")
+
 
     with col22:
         st.write("#### Average Employment Rate Ranking")

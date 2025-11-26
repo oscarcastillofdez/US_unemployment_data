@@ -1,9 +1,10 @@
 import psycopg2
+import time
 import pandas as pd
 import streamlit as st
 
-
-def get_connection():
+@st.cache_resource
+def connect_to_db():
     return psycopg2.connect(
         host = st.secrets["db_host"],
         port = st.secrets["db_port"],
@@ -13,19 +14,43 @@ def get_connection():
         sslmode = st.secrets["db_sslmode"]
     )
 
-@st.cache_data()
+def get_connection():
+    conn = connect_to_db()
+    try:
+        pd.read_sql("SELECT 1;", conn)
+    except Exception:
+        conn = psycopg2.connect(
+            host = st.secrets["db_host"],
+            port = st.secrets["db_port"],
+            database = st.secrets["db_database"],
+            user = st.secrets["db_user"],
+            password = st.secrets["db_password"],
+            sslmode = st.secrets["db_sslmode"]
+        )
+    return conn
+
+@st.cache_data
 def make_query(query):
     conn = get_connection()
     return pd.read_sql(query, conn)
-    
+
 
 def get_all_data():
-    return make_query(""" 
+
+    init = time.time()
+    df =  make_query(""" 
         SELECT * 
         FROM public.unemployment_data 
             NATURAL JOIN public.state_lookup
             NATURAL JOIN public.calendar_lookup
+            NATURAL JOIN public.benefits_lookup
     """)
+    fin = time.time()
+
+    st.write("Query in : ", fin - init, "seconds")
+
+
+    return df
 
 def get_unemployment_data():
     return make_query("SELECT * FROM unemployment_data")
@@ -216,7 +241,8 @@ def get_all_data_tables():
     state_df = make_query("SELECT * FROM state_lookup")
     date_df = make_query("SELECT * FROM calendar_lookup")
     data_df = make_query("SELECT * FROM unemployment_data")
-    return state_df, date_df, data_df
+    benefits_df = make_query("SELECT * FROM benefits_lookup")
+    return state_df, date_df, data_df, benefits_df
 
 def get_all_users_tables():
     user_df = make_query("SELECT * FROM users")
